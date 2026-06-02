@@ -1,0 +1,20 @@
+h1 Stacking Task Memo
+
+form(method="POST" action="/tasks")
+  div
+    label 担当者
+    input(type="text" name="userName")
+
+  div
+    label タスク名
+    input(type="text" name="title")
+
+  div
+    label 内容
+    input(type="text" name="content")
+
+  div
+    label 締切日
+    input(type="date" name="deadline")
+
+  button(type="submit") 登録
