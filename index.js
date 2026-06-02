@@ -11,23 +11,28 @@ app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'pug');
 
 app.post('/tasks', async (req, res) => {
-  const {
-    userName,
-    title,
-    content,
-    deadline
-  } = req.body;
-
-  await prisma.task.create({
-    data: {
+  try {
+    const {
       userName,
       title,
       content,
-      deadline: new Date(deadline)
-    }
-  });
+      deadline
+    } = req.body;
 
-  res.redirect('/');
+    await prisma.task.create({
+      data: {
+        userName,
+        title,
+        content,
+        deadline: deadline ? new Date(deadline) : null
+      }
+    });
+
+    res.redirect('/');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('error');
+  }
 });
 
 app.get('/', async (req, res) => {
@@ -42,29 +47,26 @@ app.get('/', async (req, res) => {
   });
 });
 
-app.post('/tasks/:id/delete', async (req, res) => {
-  await prisma.task.delete({
-    where: {
-      id: Number(req.params.id)
-    }
-  });
-
-  res.redirect('/');
-});
-
-app.listen(8000, () => {
-  console.log('Listening on 8000');
-});
-
 app.post('/tasks/:id/complete', async (req, res) => {
-  await prisma.task.update({
-    where: {
-      id: Number(req.params.id)
-    },
-    data: {
-      completed: true
-    }
-  });
+  try {
+    await prisma.task.update({
+      where: {
+        id: Number(req.params.id)
+      },
+      data: {
+        completed: true
+      }
+    });
 
-  res.redirect('/');
+    res.redirect('/');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('error');
+  }
+});
+
+const port = process.env.PORT || 8000;
+
+app.listen(port, () => {
+  console.log(`Listening on ${port}`);
 });
