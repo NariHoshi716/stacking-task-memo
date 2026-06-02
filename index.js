@@ -65,6 +65,21 @@ app.post('/tasks/:id/complete', async (req, res) => {
   }
 });
 
+app.post('/tasks/:id/delete', async (req, res) => {
+  try {
+    await prisma.task.delete({
+      where: {
+        id: Number(req.params.id)
+      }
+    });
+
+    res.redirect('/');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('error');
+  }
+});
+
 const port = process.env.PORT || 8000;
 
 app.listen(port, () => {
