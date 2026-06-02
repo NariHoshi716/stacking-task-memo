@@ -18,3 +18,24 @@ form(method="POST" action="/tasks")
     input(type="date" name="deadline")
 
   button(type="submit") 登録
+
+each task in tasks
+  div
+    p= task.userName
+    p= task.title
+    p= task.content
+    p= task.deadline.toLocaleDateString('ja-JP')
+
+    if task.completed
+      p 完了済み
+    else
+      p 未完了
+
+    p= task.createdAt
+
+    form(method="POST" action=`/tasks/${task.id}/delete`)
+      button(type="submit") 削除
+
+    if !task.completed
+      form(method="POST" action=`/tasks/${task.id}/complete`)
+        button(type="submit") 完了
